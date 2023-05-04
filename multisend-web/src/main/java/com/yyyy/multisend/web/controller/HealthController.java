@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author isADuckA
  * @Date 2023/4/9 18:17
+ * 健康测试
  */
 @RestController
 @RequestMapping("/health")
