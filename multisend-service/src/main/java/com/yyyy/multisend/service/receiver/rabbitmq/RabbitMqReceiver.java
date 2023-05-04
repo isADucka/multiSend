@@ -2,8 +2,10 @@ package com.yyyy.multisend.service.receiver.rabbitmq;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.yyyy.multisend.common.models.Models;
+import com.yyyy.multisend.common.models.SsmModle;
 import com.yyyy.multisend.common.ssm.MsgTask;
-import com.yyyy.multisend.handler.service.ReallySend;
+import com.yyyy.multisend.handler.service.ReallySsmSend;
 import com.yyyy.multisend.service.receiver.Consumer;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
@@ -13,6 +15,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sun.reflect.misc.ReflectUtil;
+
+import java.lang.reflect.Field;
 
 /**
  * @author isADuckA
@@ -20,8 +25,7 @@ import org.springframework.stereotype.Service;
  * rabbitMq进行消费
  */
 @Service
-
-public class RabbitMqComsumer {
+public class RabbitMqReceiver {
 
     @Value("${multisend.rabbitmq.queueName}")
     private String queueName;
@@ -39,12 +43,15 @@ public class RabbitMqComsumer {
     @RabbitListener(queues = "${multisend.rabbitmq.queueName}")
     public void comsume(Message message) {
 
-        System.out.println(message);
         byte[] body = message.getBody();
-        MsgTask msgTask = (MsgTask)JSONObject.parseObject(body, MsgTask.class);
-        System.out.println(msgTask.getContext());
+        MsgTask msgTask = JSONObject.parseObject(body, MsgTask.class);
+        System.err.println(msgTask);
+        Models models = msgTask.getModels();
+
+//        System.out.println(msgTask.getContext());
         //调用消费的service来处理从队列中拿出来的消息
         //这里调用service是因为如果有多个中间件的话就会很多重复，所以调用一个统一的去执行
+
         consumer.comsumerMsg(msgTask);
 
 

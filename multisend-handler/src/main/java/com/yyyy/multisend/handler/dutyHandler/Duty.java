@@ -8,7 +8,7 @@ import com.yyyy.multisend.dao.handler.DutyChain;
  */
 public interface Duty {
     /**
-     * 处理ssm消息的参数
+     * 处理消息的参数
      * @param dutyChain
      */
     DutyChain porcess(DutyChain dutyChain);

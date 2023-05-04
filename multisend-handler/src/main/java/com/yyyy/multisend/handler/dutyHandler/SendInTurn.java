@@ -31,6 +31,7 @@ public class SendInTurn {
     private SendMqDuty sendMqDuty;
 
 
+    //记录责任链执行顺序
     private  Map<SendType,List<Duty>> processMap;
 
     /**

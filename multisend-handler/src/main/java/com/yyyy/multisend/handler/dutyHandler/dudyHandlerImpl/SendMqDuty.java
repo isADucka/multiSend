@@ -27,6 +27,7 @@ public class SendMqDuty implements Duty {
 
     /**
      * 真正发送消息到mq的地方
+     * 如果是多个对象，也是发一次请求，不会实行拆分
      * @param dutyChain
      * @return
      */
@@ -36,8 +37,13 @@ public class SendMqDuty implements Duty {
 
         //这个exchange得是固定的，routingKey是拼接的
         MsgTask msgTask = dutyChain.getMsgTask();
-        String s = JSONObject.toJSONString(msgTask);
-        rabbitTemplate.convertAndSend(exchange,"ssm",s);
+        String msg = JSONObject.toJSONString(msgTask);
+        //routingkey也得随着改变，这里可以考虑让他变成receiverType的code值，或者添加一个desc的属性看起来更加清晰
+        //已改
+        String routingkey= String.valueOf(dutyChain.getMsgTask().getReceiverType());
+        //这个地方记得将这个routingkey的值和队列进行绑定
+        rabbitTemplate.convertAndSend(exchange,routingkey,msg);
+
 
         return  dutyChain;
     }

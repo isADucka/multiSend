@@ -9,12 +9,15 @@ import com.yyyy.multisend.handler.pojo.SsmClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author isADuckA
  * @Date 2023/4/11 21:08
  */
 @Service
-public class ReallySend {
+public class ReallySsmSend {
 
 
     @Autowired
@@ -26,25 +29,26 @@ public class ReallySend {
      * @param msgTask
      * @return
      */
-    public boolean realSend(MsgTask msgTask){
+    public void realSend(MsgTask msgTask){
 
         try {
 
             //获取身份认证
             Client client = ssmClient.beforeSend();
-            System.out.println("身份验证"+client);
             //获取发送请求
-            SendSmsRequest sendSmsRequest = ssmClient.sendRequest(msgTask);
+            List<SendSmsRequest> sendSmsRequests = ssmClient.sendRequest(msgTask);
             RuntimeOptions runtimeOptions = new RuntimeOptions();
+            for(SendSmsRequest send:sendSmsRequests){
+                SendSmsResponse sendSmsResponse = client.sendSmsWithOptions(send, runtimeOptions);
+            }
 
-            SendSmsResponse sendSmsResponse = client.sendSmsWithOptions(sendSmsRequest, runtimeOptions);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         /**
-         * 待定
+         * 待定,看如何处理返回true,如何处理返回false
          */
-        return  true;
+//        return  true;
     }
 }

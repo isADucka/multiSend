@@ -1,7 +1,9 @@
 package com.yyyy.multisend.service.pojo.po;
 
 import com.yyyy.multisend.common.ssm.MsgTask;
-import com.yyyy.multisend.handler.service.ReallySend;
+import com.yyyy.multisend.handler.deduplication.ExitDeduplicationService;
+import com.yyyy.multisend.handler.service.ReallyEmailSend;
+import com.yyyy.multisend.handler.service.ReallySsmSend;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,33 @@ import org.springframework.stereotype.Service;
 @Setter
 public class PoolMsg implements Runnable{
 
+
     @Autowired
-    private ReallySend reallySend;
+    private ReallySsmSend reallySsmSend;
+
+    @Autowired
+    private ReallyEmailSend reallyEmailSend;
+
+    @Autowired
+    private ExitDeduplicationService exitDeduplicationService;
+
 
     private MsgTask msgTask;
 
     @Override
     public void run() {
-        reallySend.realSend(msgTask);
+
+        //先去重
+        exitDeduplicationService.deduplicationPorcess(msgTask);
+
+//        System.out.println("执行");
+//        reallySsmSend.realSend(msgTask);
+        if(msgTask.getReceiver().size()!=0){
+            System.out.println("行不行");
+            System.out.println(msgTask.getReceiver());
+            reallyEmailSend.realSend(msgTask);
+        }
+
     }
 
 }
