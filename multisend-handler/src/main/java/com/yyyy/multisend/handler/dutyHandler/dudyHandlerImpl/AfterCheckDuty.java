@@ -11,6 +11,7 @@ import com.yyyy.multisend.common.ssm.MsgTask;
 import com.yyyy.multisend.dao.Mapper.MessageModelDao;
 import com.yyyy.multisend.dao.handler.DutyChain;
 import com.yyyy.multisend.handler.dutyHandler.Duty;
+import com.yyyy.multisend.handler.utils.MsgTaskUtils;
 import com.yyyy.multisend.handler.utils.PlaceHolderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,8 +42,11 @@ public class AfterCheckDuty implements Duty {
         MessageModel messageModel = messageModelDao.findById(msgTask.getModelId()).get();
         //设置接收者类型
         msgTask.setReceiverType(messageModel.getReceiverType());
+//        msgTask.setBusinessId(MsgTaskUtils.createBusinessId(messageModel.getModelId(),messageModel.getReceiverType(),messageModel.getMsgType()));
         //设置消息类型，营销类，验证码类，通知类
         msgTask.setMsgType(messageModel.getMsgType());
+
+
         if(messageModel==null){
             //说明这个模板不存在，返回错误
             dutyChain.setOver(true);

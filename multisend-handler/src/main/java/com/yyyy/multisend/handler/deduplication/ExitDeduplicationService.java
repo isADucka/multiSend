@@ -4,8 +4,11 @@ import cn.hutool.json.ObjectMapper;
 import cn.hutool.setting.dialect.Props;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.yyyy.multisend.common.povo.po.logPo.Business;
+import com.yyyy.multisend.common.povo.po.logPo.BusinessResult;
 import com.yyyy.multisend.common.povo.vo.common.Constant;
 import com.yyyy.multisend.common.ssm.MsgTask;
+import com.yyyy.multisend.dao.utils.LogUtils;
 import com.yyyy.multisend.handler.deduplication.builder.DeduplicationParm;
 import com.yyyy.multisend.handler.deduplication.builder.InitProcess;
 import com.yyyy.multisend.handler.deduplication.service.DeduplicationService;
@@ -28,6 +31,10 @@ public class ExitDeduplicationService {
 
     @Autowired
     private InitProcess process;
+    @Autowired
+    private LogUtils logUtils;
+
+    private String businessName="ExitDeduplicationService.deduplicationPorcess";
 
 //    @Autowired
 //    private GetConfigProperties configProperties;
@@ -61,17 +68,20 @@ public class ExitDeduplicationService {
             deduplicationParm.setDeduplicationType(code);
             //调用各个类型的去重
             receivers= deduplicationService.get(code).dedupService(deduplicationParm,props);
-            System.out.println(receivers);
             //如果返回值的receiver是null,就不用进行频次去重了，直接结束这条链
-
-
             if(receivers.size()==0||receivers==null){
                 break;
             }
             deduplicationParm.getMsgTask().setReceiver(receivers);
 
         }
-
+        logUtils.print(Business.builder()
+                .businessId(msgTask.getBusinessId())
+                .businessName(businessName)
+                .result(BusinessResult.BUSINESS_DEDUPLICATION)
+                .receiverType(msgTask.getReceiverType())
+                .args(msgTask)
+                .build());
         return msgTask;
     }
 

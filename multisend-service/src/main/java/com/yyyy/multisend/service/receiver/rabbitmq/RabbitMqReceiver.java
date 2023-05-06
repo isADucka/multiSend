@@ -3,9 +3,7 @@ package com.yyyy.multisend.service.receiver.rabbitmq;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yyyy.multisend.common.models.Models;
-import com.yyyy.multisend.common.models.SsmModle;
 import com.yyyy.multisend.common.ssm.MsgTask;
-import com.yyyy.multisend.handler.service.ReallySsmSend;
 import com.yyyy.multisend.service.receiver.Consumer;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
@@ -39,20 +37,20 @@ public class RabbitMqReceiver {
      * 这里就完成了消费，把消息从消息队列里面拿出来
      * 应该是得把他放到线程池里面去发送消息，先不写线程池
      */
-//    @RabbitHandler
+    @RabbitHandler
     @RabbitListener(queues = "${multisend.rabbitmq.queueName}")
     public void comsume(Message message) {
 
         byte[] body = message.getBody();
         MsgTask msgTask = JSONObject.parseObject(body, MsgTask.class);
-        System.err.println(msgTask);
-        Models models = msgTask.getModels();
+//        Models models = msgTask.getModels();
 
 //        System.out.println(msgTask.getContext());
         //调用消费的service来处理从队列中拿出来的消息
         //这里调用service是因为如果有多个中间件的话就会很多重复，所以调用一个统一的去执行
 
         consumer.comsumerMsg(msgTask);
+
 
 
     }

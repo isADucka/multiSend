@@ -44,7 +44,6 @@ public class SendMqDuty implements Duty {
         //这个地方记得将这个routingkey的值和队列进行绑定
         rabbitTemplate.convertAndSend(exchange,routingkey,msg);
 
-
         return  dutyChain;
     }
 }

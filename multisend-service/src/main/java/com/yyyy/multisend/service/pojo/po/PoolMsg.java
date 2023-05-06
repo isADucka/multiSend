@@ -39,7 +39,7 @@ public class PoolMsg implements Runnable{
 //        System.out.println("执行");
 //        reallySsmSend.realSend(msgTask);
         if(msgTask.getReceiver().size()!=0){
-            System.out.println("行不行");
+
             System.out.println(msgTask.getReceiver());
             reallyEmailSend.realSend(msgTask);
         }

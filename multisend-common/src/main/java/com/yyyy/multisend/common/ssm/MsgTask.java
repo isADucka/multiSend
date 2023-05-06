@@ -79,4 +79,9 @@ public class MsgTask {
      */
    private Integer msgType;
 
+    /**
+     * 业务id
+     */
+   private Long businessId;
+
 }

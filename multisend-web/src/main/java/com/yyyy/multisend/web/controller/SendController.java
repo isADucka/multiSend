@@ -5,6 +5,7 @@ import com.yyyy.multisend.common.povo.vo.Result;
 import com.yyyy.multisend.common.povo.po.MessageModel;
 import com.yyyy.multisend.service.receiver.rabbitmq.RabbitMqReceiver;
 import com.yyyy.multisend.service.service.SendService;
+import com.yyyy.multisend.web.annocation.MultisendAspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/sends")
+@MultisendAspect
 public class SendController {
 
 

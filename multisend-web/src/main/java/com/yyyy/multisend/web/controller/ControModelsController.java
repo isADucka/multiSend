@@ -3,6 +3,7 @@ package com.yyyy.multisend.web.controller;
 import com.yyyy.multisend.common.povo.vo.Result;
 import com.yyyy.multisend.common.povo.po.MessageModel;
 import com.yyyy.multisend.service.service.ControModelsService;
+import com.yyyy.multisend.web.annocation.MultisendAspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/contro")
+@MultisendAspect
 public class ControModelsController {
 
     @Autowired

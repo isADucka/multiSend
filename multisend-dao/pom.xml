@@ -42,7 +42,12 @@
 <!--            <scope>runtime</scope>-->
 <!--        </dependency>-->
 
-
+        <!--实现优雅日志打印-->
+        <dependency>
+            <groupId>cn.monitor4all</groupId>
+            <artifactId>log-record-starter</artifactId>
+            <version>1.0.4.1</version>
+        </dependency>
 
 
 

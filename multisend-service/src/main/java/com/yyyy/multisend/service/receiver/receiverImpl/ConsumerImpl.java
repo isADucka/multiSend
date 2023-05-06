@@ -1,6 +1,9 @@
 package com.yyyy.multisend.service.receiver.receiverImpl;
 
+import com.yyyy.multisend.common.povo.po.logPo.Business;
+import com.yyyy.multisend.common.povo.po.logPo.BusinessResult;
 import com.yyyy.multisend.common.ssm.MsgTask;
+import com.yyyy.multisend.dao.utils.LogUtils;
 import com.yyyy.multisend.handler.pool.PoolHolder;
 import com.yyyy.multisend.handler.pool.ThreadConfig;
 import com.yyyy.multisend.handler.service.ReallySsmSend;
@@ -19,12 +22,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConsumerImpl implements Consumer {
 
+    @Autowired
+    private LogUtils logUtils;
 
     @Autowired
     private PoolMsg poolMsg;
 
     @Autowired
     private PoolHolder poolHolder;
+
+    private final String businessName="cosumer_consumerMsg";
 
     /**
      * 处理从消息队列中拿出来的消息
@@ -37,8 +44,14 @@ public class ConsumerImpl implements Consumer {
         //先拼接这个线程池的名称
         String poolName = msgTask.getReceiverType()+ "" + msgTask.getMsgType();
         poolMsg.setMsgTask(msgTask);
-//        PoolHolder poolHolder=new PoolHolder();
-
+        //打点日志
+        logUtils.print(Business.builder()
+                .args(msgTask)
+                .businessName(businessName)
+                .result(BusinessResult.SUCCESS_SEDN_MQ)
+                .businessId(msgTask.getBusinessId())
+                .receiverType(msgTask.getReceiverType())
+                .build());
         poolHolder.getPoolByName(poolName).execute(poolMsg);
 
 
