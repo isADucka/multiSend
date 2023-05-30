@@ -15,7 +15,10 @@ public enum  BusinessResult {
     FAIL("执行失败"),
     SUCCESS_SEDN_MQ("成功发送消息到消息中转站"),
     FAILT_SEND("消息下发失败"),
-    BUSINESS_DEDUPLICATION("消息去重");
+    BUSINESS_DEDUPLICATION("消息去重"),
+    SHIELD_NOT_SEND("夜间屏蔽,不发送"),
+    SHIELD_SEND("夜间屏蔽但发送"),
+    NOT_SHIELD("夜间不屏蔽");
 
 
 

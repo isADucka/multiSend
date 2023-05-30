@@ -4,6 +4,7 @@ import com.yyyy.multisend.common.enums.MsgType;
 import com.yyyy.multisend.common.enums.ReceiverType;
 import com.yyyy.multisend.common.models.Models;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Map;
@@ -17,52 +18,16 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @Builder
+@Accessors(chain = true)
 public class MsgTask {
-
-//    /**
-//     * 消息标题，短信无，邮件有
-//     */
-//    private String title;
-//
-//    /**
-//     * 消息的内容
-//     */
-//    private String context;
-//
-//    /**
-//     * 消息内容的方式，比如通知类短信，营销类短信
-//     */
-////    private MsgType msgType;
-//    private Integer msgType;
-//
-//
-//    /**
-//     * 消息接收者
-//     */
-//    private String receiever;
-//
-//
-//    /**
-//     * 接收者类型
-//     */
-////    private ReceiverType receiverType;
-//    private Integer receiverType;
-
 
     /**
      * 模板id
      */
    private Long modelId;
 
-    /**
-     * 包含传进来的参数
-     */
-   private Map<String,String> parm;
 
-    /**
-     * 把他和parm分开是因为没有占位符，输入什么就是什么
-     */
-   private Set<String> receiver;
+    private Map<String,Map<String,String>> receiverAndParm;
 
     /**
      * 接收者类型
@@ -83,5 +48,10 @@ public class MsgTask {
      * 业务id
      */
    private Long businessId;
+
+    /**
+     * 屏蔽类型
+     */
+   private Integer shield;
 
 }

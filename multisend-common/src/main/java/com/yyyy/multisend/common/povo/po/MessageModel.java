@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.yyyy.multisend.common.enums.MsgType;
 import com.yyyy.multisend.common.enums.ReceiverType;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.apache.ibatis.annotations.Delete;
 import org.hibernate.annotations.Table;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,8 @@ import java.io.Serializable;
 @Component
 @ToString
 @Getter
+@Builder
+@Accessors(chain = true)
 public class MessageModel  {
     /**
      * 模板id,这里值的是存进数据库的模板id,每条信息独有的标识
@@ -81,17 +84,49 @@ public class MessageModel  {
      * 102 ：营销类
      * 103 ：通知类
      */
-//    private MsgType msgType;
+   // private MsgType msgType;
     private Integer msgType;
 
     /**
-     * 传进来的连接
+     * 传进来的链接,这里指的是发送消息传进来的附件url
      */
     private String url;
 
-
+    /**
+     * 是否删除
+     */
     private Integer isDelete;
 
+ /**
+  * 夜间屏蔽
+  * 0为夜间不屏蔽，1为夜间屏蔽，2为次日发送
+  */
+ private Integer shield;
+
+ /**
+  * 模板目标人群路径
+  */
+ private String targetPath;
+
+ /**
+  * 是否定时，1为定时，0为实时
+  */
+ private Integer isCron;
+
+ /**
+  * 定时发送的表达式
+  */
+ private String cronExpre;
+
+ /**
+  * 定时模板任务id
+  */
+ private Integer cronTaskId;
+
+ /**
+  * 定时模板的状态
+  */
+ private Integer cronStatus;
 
 
 

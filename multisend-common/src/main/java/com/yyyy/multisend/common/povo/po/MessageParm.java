@@ -1,5 +1,6 @@
 package com.yyyy.multisend.common.povo.po;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Data
 @Setter
 @Getter
+@Builder
 public class MessageParm {
     /**
      * 模板id
@@ -26,7 +28,6 @@ public class MessageParm {
      * 参数信息
      */
     private String content;
-
 
 
 }
