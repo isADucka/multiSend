@@ -9,6 +9,7 @@ import com.yyyy.multisend.common.ssm.MsgTask;
 import com.yyyy.multisend.handler.deduplication.builder.DeduplicationParm;
 import com.yyyy.multisend.handler.deduplication.parmHander.ConstructKey;
 import com.yyyy.multisend.handler.utils.RedisUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -16,6 +17,7 @@ import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -26,6 +28,7 @@ import java.util.Set;
  * 内容去重（eg:实现五分钟内，对某用户发送相同的消息会执行去重操作）
  */
 @Service
+@Slf4j
 public class ContentDeduplicationService implements DeduplicationService{
 
     @Autowired
@@ -42,9 +45,16 @@ public class ContentDeduplicationService implements DeduplicationService{
     }
 
     @Override
-    public Set<String> dedupService(DeduplicationParm deduplicationParm, Properties props) {
+//    public Set<String> dedupService(DeduplicationParm deduplicationParm, Properties props) {
+    public Map<String,Map<String,String>> dedupService(DeduplicationParm deduplicationParm, Properties props) {
         MsgTask msgTask = deduplicationParm.getMsgTask();
-        Set<String> receivers = msgTask.getReceiver();
+//        Set<String> receivers = msgTask.getReceiver();
+        Map<String, Map<String, String>> receiverAndParm = deduplicationParm.getMsgTask().getReceiverAndParm();
+        if(receiverAndParm.size()==0||receiverAndParm.isEmpty()){
+            //中断他
+            return null;
+        }
+        Set<String> receivers = msgTask.getReceiverAndParm().keySet();
         //生成一个雪花id，来作为一个value
         String snowId = String.valueOf(IdUtil.getSnowflakeNextId());
         //生成一个时间戳来作为分数
@@ -53,7 +63,7 @@ public class ContentDeduplicationService implements DeduplicationService{
 
         deduplicationParm.setDeduplicationTime(Long.parseLong(property));
         deduplicationParm.setLimit(Integer.parseInt(props.getProperty(Constant.DEDUPLICATION + Constant.SPACER + deduplicationParm.getDeduplicationType() + Constant.POINT + Constant.NUM)));
-
+        System.out.println("_________"+receivers);
         for(String user:receivers){
             String key = constructKey.singleKey(deduplicationParm.getDeduplicationType(), user, msgTask.getReceiverType(), msgTask.getModelId());
             System.out.println(key);
@@ -62,13 +72,15 @@ public class ContentDeduplicationService implements DeduplicationService{
             if(aBoolean){
                 System.out.println("超过阈值");
                 //如果是true,说明这个值已经超过阈值，所以要把这个用户删除
-                receivers.remove(user);
+//                receivers.remove(user);
+                receiverAndParm.remove(user);
             }else{
+                log.info("成功添加到redis,用户信息为={}",user);
                 System.out.println("还能添加进redis");
             }
         }
         //实现
         System.out.println("接收者"+receivers);
-        return receivers;
+        return receiverAndParm;
     }
 }

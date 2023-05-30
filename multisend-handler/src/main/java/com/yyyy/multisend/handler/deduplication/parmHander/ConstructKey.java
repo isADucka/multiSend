@@ -26,7 +26,8 @@ public class ConstructKey {
 
         MsgTask msgTask = parm.getMsgTask();
         Set<String> keys=new HashSet<>();
-        Set<String> receiver = msgTask.getReceiver();
+//        Set<String> receiver = msgTask.getReceiver();
+        Set<String> receiver = msgTask.getReceiverAndParm().keySet();
         for (String user:receiver){
             String key = singleKey(parm.getDeduplicationType(), user, msgTask.getReceiverType(), msgTask.getModelId());
             keys.add(key);

@@ -25,7 +25,8 @@ public class FrequencyDeduplicationService implements DeduplicationService{
     private RedisUtils redisUtils;
 
     @Override
-    public Set<String> dedupService(DeduplicationParm deduplicationParm, Properties props) {
+//    public Set<String> dedupService(DeduplicationParm deduplicationParm, Properties props) {
+    public Map<String,Map<String,String>> dedupService(DeduplicationParm deduplicationParm, Properties props) {
         MsgTask msgTask = deduplicationParm.getMsgTask();
         //用于存储需要删除的key
         List<String> receiver = new LinkedList<>();
@@ -36,12 +37,13 @@ public class FrequencyDeduplicationService implements DeduplicationService{
         //存储需要更新的key
         Map<String,Integer> waitToUpdate=new HashMap<>();
         //再次构建key来
-        for(String user:msgTask.getReceiver()){
+//        for(String user:msgTask.getReceiver()){
+        for(String user:msgTask.getReceiverAndParm().keySet()){
             String key = constructKey.singleKey(deduplicationParm.getDeduplicationType(), user, msgTask.getReceiverType(), msgTask.getModelId());
             String value = mget.get(key);
             //超过阈值的则不管他
             if(value==null){
-                //说明当前的keyb不存在，所以直接存为1
+                //说明当前的key不存在，所以直接存为1
                 waitToUpdate.put(key,1);
             }else{
                 int num = Integer.parseInt(value);
@@ -55,10 +57,14 @@ public class FrequencyDeduplicationService implements DeduplicationService{
             }
 
         }
-        deduplicationParm.getMsgTask().getReceiver().removeAll(receiver);
+//        deduplicationParm.getMsgTask().getReceiver().removeAll(receiver);
+        for(String rm:receiver){
+            deduplicationParm.getMsgTask().getReceiverAndParm().remove(rm);
+        }
         //把剩下的value要更新到redis里面去，并且更新过期时间
         redisUtils.updateValue(waitToUpdate);
-        return deduplicationParm.getMsgTask().getReceiver();
+//        return deduplicationParm.getMsgTask().getReceiver();
+        return deduplicationParm.getMsgTask().getReceiverAndParm();
 
 
     }
