@@ -16,8 +16,8 @@ public class PreCheckDuty implements Duty {
 
     @Override
     public DutyChain porcess(DutyChain dutyChain) {
-        //这个是用于判断责任链接是否有问题的，
-        dutyChain.setOver(true);
+//        //这个是用于判断责任链接是否有问题的，
+//        dutyChain.setOver(true);
 
         //处理dutyChin的外壳
         //先判断整体是不是空的
