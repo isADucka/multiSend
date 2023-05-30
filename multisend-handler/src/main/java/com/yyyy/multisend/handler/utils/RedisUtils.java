@@ -2,7 +2,9 @@ package com.yyyy.multisend.handler.utils;
 
 import cn.hutool.core.date.DateUtil;
 import com.google.common.base.Throwables;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * redis使用工具
  */
 @Component
+@Slf4j
 public class RedisUtils {
 
     @Autowired
@@ -84,4 +87,76 @@ public class RedisUtils {
 
     }
 
+
+    /**
+     * lRange
+     *
+     * @param key
+     */
+    public List<String> lRange(String key, long start, long end) {
+        try {
+            return redisTemplate.opsForList().range(key, start, end);
+        } catch (Exception e) {
+            log.error("RedisUtils#lRange fail! e:{}", Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
+
+    /**
+     * lpush 方法 并指定 过期时间
+     */
+    public void lPush(String key, String value, Long seconds) {
+        try {
+            redisTemplate.executePipelined((RedisCallback<String>) connection -> {
+                connection.lPush(key.getBytes(), value.getBytes());
+                connection.expire(key.getBytes(), seconds);
+                return null;
+            });
+        } catch (Exception e) {
+            log.error("RedisUtils#pipelineSetEx fail! e:{}", Throwables.getStackTraceAsString(e));
+        }
+    }
+
+    /**
+     * lLen 方法
+     * 查看这个key里面是否有数据，有助于第二天九点发送做准备
+     */
+    public Long lLen(String key) {
+        try {
+            return redisTemplate.opsForList().size(key);
+        } catch (Exception e) {
+            log.error("RedisUtils#pipelineSetEx fail! e:{}", Throwables.getStackTraceAsString(e));
+        }
+        return 0L;
+    }
+
+    /**
+     * lPop 方法
+     * 获取夜间屏蔽九点发送这个队列的数据
+     */
+    public String lPop(String key) {
+        try {
+            return redisTemplate.opsForList().leftPop(key);
+        } catch (Exception e) {
+            log.error("RedisUtils#pipelineSetEx fail! e:{}", Throwables.getStackTraceAsString(e));
+        }
+        return "";
+    }
+
+
+
+    /**
+     * hGetAll
+     *
+     * @param key
+     */
+    public Map<Object, Object> hGetAll(String key) {
+        try {
+            Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+            return entries;
+        } catch (Exception e) {
+            log.error("RedisUtils#hGetAll fail! e:{}", Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
 }
