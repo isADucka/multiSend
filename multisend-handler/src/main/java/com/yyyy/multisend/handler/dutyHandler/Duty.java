@@ -12,4 +12,7 @@ public interface Duty {
      * @param dutyChain
      */
     DutyChain porcess(DutyChain dutyChain);
+
+
+
 }
