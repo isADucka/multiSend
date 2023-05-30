@@ -61,18 +61,24 @@ public class ExitDeduplicationService {
                                                     .msgTask(msgTask)
                                                     .build();
 
-        Set<String> receivers=msgTask.getReceiver() ;
+//        Set<String> receivers=msgTask.getReceiver() ;
+        Map<String, Map<String, String>> receiverAndParm = msgTask.getReceiverAndParm();
         //遍历两个去重。先是内容去重，然后再实现频次去重
         for (Integer code:deduplicationService.keySet()){
             //把去重类型赋值
             deduplicationParm.setDeduplicationType(code);
             //调用各个类型的去重
-            receivers= deduplicationService.get(code).dedupService(deduplicationParm,props);
+//            receivers= deduplicationService.get(code).dedupService(deduplicationParm,props);
+            receiverAndParm= deduplicationService.get(code).dedupService(deduplicationParm, props);
             //如果返回值的receiver是null,就不用进行频次去重了，直接结束这条链
-            if(receivers.size()==0||receivers==null){
+//            if(receivers.size()==0||receivers==null){
+//                break;
+//            }
+            if(receiverAndParm.size()==0||receiverAndParm==null){
                 break;
             }
-            deduplicationParm.getMsgTask().setReceiver(receivers);
+//            deduplicationParm.getMsgTask().setReceiver(receivers);
+            deduplicationParm.getMsgTask().setReceiverAndParm(receiverAndParm);
 
         }
         logUtils.print(Business.builder()
