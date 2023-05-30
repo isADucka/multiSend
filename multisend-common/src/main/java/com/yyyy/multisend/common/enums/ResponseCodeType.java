@@ -29,7 +29,8 @@ public enum ResponseCodeType {
     DUTY_ERROR(2,"责任链请求失误"),
     DUTY_ERROR_NULL(3,"责任链为空"),
     DUTY_EEROR_SENDTYPENULL(4,"发送方式为空，即不知道是发送还是撤销"),
-    DUTY_ERROR_MSGTASKNULL(5,"MsgTask的值为null");
+    DUTY_ERROR_MSGTASKNULL(5,"MsgTask的值为null"),
+    DUTY_ERROR_RECEIVER_ERR(6,"符合条件的发送对象为空");
 
 
 

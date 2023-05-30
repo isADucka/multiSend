@@ -55,15 +55,19 @@ public class SsmClient {
 
         List<SendSmsRequest> requestList=new LinkedList<>();
 
-        SendSmsRequest sendSmsRequest = new SendSmsRequest()
-                .setSignName(ssmOfAliyun.getSingleName())
-                .setTemplateCode(ssmOfAliyun.getTemplateId())
-                .setTemplateParam(msgTask.getParm().get(MsgName.MSGCONTENT));
+        for(String user:msgTask.getReceiverAndParm().keySet()) {
+            SendSmsRequest sendSmsRequest = new SendSmsRequest()
+                    .setSignName(ssmOfAliyun.getSingleName())
+                    .setTemplateCode(ssmOfAliyun.getTemplateId())
+//                .setTemplateParam(msgTask.getParm().get(MsgName.MSGCONTENT));
+                    .setTemplateParam(msgTask.getReceiverAndParm().get(user).get(MsgName.MSGCONTENT))
+                    .setPhoneNumbers(user);
 //          .setPhoneNumbers(msgTask.getReceiver())
-        for (String receiver:msgTask.getReceiver()){
-            requestList.add(sendSmsRequest.setPhoneNumbers(receiver));
+//            for (String receiver : msgTask.getReceiver()) {
+//                requestList.add(sendSmsRequest.setPhoneNumbers(receiver));
+                requestList.add(sendSmsRequest);
+//            }
         }
-
         return requestList;
 
     }

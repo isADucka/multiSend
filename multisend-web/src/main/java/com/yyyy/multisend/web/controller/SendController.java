@@ -6,6 +6,7 @@ import com.yyyy.multisend.common.povo.po.MessageModel;
 import com.yyyy.multisend.service.receiver.rabbitmq.RabbitMqReceiver;
 import com.yyyy.multisend.service.service.SendService;
 import com.yyyy.multisend.web.annocation.MultisendAspect;
+import com.yyyy.multisend.web.service.CronSendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,9 @@ public class SendController {
 
     @Autowired
     private RabbitMqReceiver rabbitMqReceiver;
+
+    @Autowired
+    private CronSendService cronSendService;
 
 //    /***
 //     * 发送消息
@@ -46,6 +50,29 @@ public class SendController {
     public Result sendMsg(@RequestBody MessageParm messageParm){
         System.err.println(messageParm);
         return  sendService.send(messageParm);
+    }
+
+
+    /**
+     * 启动定时模块
+     * @param id
+     * @return
+     */
+    @PostMapping("start/{id}")
+    public Result startCron(@RequestBody @PathVariable("id")Long id){
+//        return sendService.startCrontak(id);
+        return cronSendService.startCrontask(id);
+    }
+
+    /**ss
+     * 暂停定时模块
+     * @param id
+     * @return
+     */
+    @PostMapping("stop/{id}")
+    public Result stopCron(@RequestBody @PathVariable("id")Long id){
+//        return sendService.startCrontak(id);
+        return cronSendService.stopCronTask(id);
     }
 
 

@@ -28,7 +28,7 @@ public class Result<T> {
      */
     private String desc;
 
-    public Result(ResponseCodeType code, T msg, String desc) {
+    public Result(T msg) {
         this.code = code;
         this.msg = msg;
         this.desc = desc;
@@ -37,6 +37,11 @@ public class Result<T> {
     public Result(ResponseCodeType code, String desc) {
         this.code = code;
         this.desc = desc;
+    }
+
+    public Result(ResponseCodeType code, T msg) {
+        this.code = code;
+        this.msg = msg;
     }
 
     /**

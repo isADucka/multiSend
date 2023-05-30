@@ -6,6 +6,7 @@ import com.yyyy.multisend.handler.dutyHandler.Duty;
 import com.yyyy.multisend.handler.dutyHandler.dudyHandlerImpl.AfterCheckDuty;
 import com.yyyy.multisend.handler.dutyHandler.dudyHandlerImpl.PreCheckDuty;
 import com.yyyy.multisend.handler.dutyHandler.dudyHandlerImpl.SendMqDuty;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.*;
  */
 
 @Service
+@Slf4j
 public class SendInTurn {
 
     @Autowired
@@ -39,27 +41,28 @@ public class SendInTurn {
      */
     @PostConstruct
     public void before(){
-        System.out.println(" i am coming");
-        List<Duty> list=new ArrayList<>();
-        list.add(0,preCheckDuty);
-        list.add(1,afterCheckDuty);
-        list.add(2, sendMqDuty);
+        List<Duty> list=new ArrayList<Duty>(Arrays.asList(preCheckDuty,afterCheckDuty,sendMqDuty));
+//        List numbers = new ArrayList();
         processMap=new HashMap<>();
         processMap.put(SendType.SEND,list);
     }
 
     public DutyChain process(DutyChain dutyChain){
-        //先写死只有发送的顺序链
-//        System.out.println(processMap.isEmpty());
         List<Duty> list = processMap.get(SendType.SEND);
+
         for (Duty duty:list){
-            DutyChain p = duty.porcess(dutyChain);
-            if(p.isOver()){
+//            DutyChain p = duty.porcess(dutyChain);
+            //作为一个标志，后面让他一开始有问题，一步步处理为没有问题
+            dutyChain.setOver(true);
+            dutyChain = duty.porcess(dutyChain);
+            if(dutyChain.isOver()){
               //说明责任链执行有问题，需要终止
+                String err="com.yyyy.multisend.handler.dutyHandler.SendInTurn"+duty;
+                log.info("位置{}"+err+" 责任链在此终止");
                 break;
             }
         }
-        //有点怪怪的
+
         return dutyChain ;
     }
 }

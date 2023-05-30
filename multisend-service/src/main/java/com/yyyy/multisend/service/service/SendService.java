@@ -1,8 +1,8 @@
 package com.yyyy.multisend.service.service;
 
 import com.yyyy.multisend.common.povo.po.MessageParm;
+import com.yyyy.multisend.common.povo.po.MessageParms;
 import com.yyyy.multisend.common.povo.vo.Result;
-import com.yyyy.multisend.common.povo.po.MessageModel;
 
 /**
  * @author isADuckA
@@ -10,6 +10,16 @@ import com.yyyy.multisend.common.povo.po.MessageModel;
  */
 public interface SendService {
 
-//    Result send(MessageModel messageModel);
+
+    /**
+     * 发送消息，目前为处理短信和邮件
+     * @param messageParm
+     * @return
+     */
     Result send(MessageParm messageParm);
+
+
+    Result sendBatch(MessageParms messageParms);
+
+
 }
