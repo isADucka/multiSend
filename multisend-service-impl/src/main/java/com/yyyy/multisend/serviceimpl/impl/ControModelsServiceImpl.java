@@ -28,9 +28,12 @@ public class ControModelsServiceImpl implements ControModelsService {
             //如果是null,说明这个模板是新建的，所以要给他赋值一个新的modleId;
             messageModel.setModelId(messageModelDao.count()+1);
         }
-        messageModelDao.save(messageModel);
+        MessageModel save = messageModelDao.save(messageModel);
 
-        return null;
+      if(save==null){
+          return  new Result("保存模板失败");
+      }
+      return Result.SUCCESS("保存模板成功！");
     }
 
     //删除模板

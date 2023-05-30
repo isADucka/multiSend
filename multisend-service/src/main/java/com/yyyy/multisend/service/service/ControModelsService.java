@@ -11,7 +11,6 @@ import java.util.List;
  * @Date 2023/4/19 19:07
  * 保存模板的service
  */
-
 public interface ControModelsService {
      Result saveModel(MessageModel messageModel);
 
