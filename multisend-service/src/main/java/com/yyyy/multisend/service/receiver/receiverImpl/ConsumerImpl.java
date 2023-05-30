@@ -5,11 +5,8 @@ import com.yyyy.multisend.common.povo.po.logPo.BusinessResult;
 import com.yyyy.multisend.common.ssm.MsgTask;
 import com.yyyy.multisend.dao.utils.LogUtils;
 import com.yyyy.multisend.handler.pool.PoolHolder;
-import com.yyyy.multisend.handler.pool.ThreadConfig;
-import com.yyyy.multisend.handler.service.ReallySsmSend;
 import com.yyyy.multisend.service.pojo.po.PoolMsg;
 import com.yyyy.multisend.service.receiver.Consumer;
-import com.yyyy.multisend.service.service.SendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
